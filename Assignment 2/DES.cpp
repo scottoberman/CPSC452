@@ -69,17 +69,34 @@ unsigned char* DES::encrypt(const unsigned char* plaintext)
 {
 	//LOGIC:
 	//1. Check to make sure that the block is exactly 8 characters (i.e. 64 bits)
+	if (strlen((char*)plaintext) != 8)
+	{
+		return 0; // Return something indicating an error
+	}
 	//2. Declate an array DES_LONG block[2];
+	DES_LONG block[2];
+
 	//3. Use ctol() to convert the first 4 chars into long; store the result in block[0]
+	block[0] = ctol((unsigned char*)plaintext); // These casts may not give correct result
+
 	//4. Use ctol() to convert the second 4 chars into long; store the resul in block[1]
+	block[1] = ctol((unsigned char*)plaintext + 4); // These casts may not give correct result
+
 	//5. Perform des_encrypt1 in order to encrypt the block using this->key (see sample codes for details)
+
 	//6. Convert the first ciphertext long to 4 characters using ltoc()
 	//7. Convert the second ciphertext long to 4 characters using ltoc()
 	//8. Save the results in the the dynamically allocated char array 
 	// (e.g. unsigned char* bytes = nerw unsigned char[8]).
-	//9. Return the pointer to the dynamically allocated array.
+	unsigned char* bytes = new unsigned char[8];
+
+	ltoc(block[0], bytes);		// Think these are correct
+	ltoc(block[1], bytes + 4);	// Think these are correct
+
 	
-	return NULL;
+
+	//9. Return the pointer to the dynamically allocated array.
+	return bytes;
 }
 
 /**
