@@ -25,10 +25,19 @@ bool AES::setKey(const unsigned char* keyArray)
 	// Both functions return 0 on success and other values on faliure.
 	// For documentation, please see https://boringssl.googlesource.com/boringssl/+/2623/include/openssl/aes.h
 	// and aes.cpp example provided with the assignment.
-	
-	
-	return false;
-	
+	if (keyArray[0] == 0) // If encrypting...
+	{
+		return AES_set_encrypt_key(keyArray + 1, 128, &key);
+	}
+	else if (keyArray[0] == 1) // If decrypting...
+	{
+		return AES_set_decrypt_key(keyArray + 1, 128, &key);
+	}
+	else // Error case should not happen
+	{
+		printf("AES::SetKey: Invalid first byte");
+		return false;
+	}	
 }
 
 /**	
