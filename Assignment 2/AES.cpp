@@ -49,11 +49,19 @@ unsigned char* AES::encrypt(const unsigned char* plainText)
 {
 	
 	//TODO: 1. Dynamically allocate a block to store the ciphertext.
+	unsigned char* cipherText = new unsigned char[strlen((char*)plainText)];
 	//	2. Use AES_ecb_encrypt(...) to encrypt the text (please see the URL in setKey(...)
 	//	and the aes.cpp example provided.
+
+	// Since AES_ebc_encrypt works on two bytes at a time, we
+	// must iterate through every two bytes 
+	for (int x = 0; x < strlen((char*)plainText); x += 2)
+	{
+		AES_ecb_encrypt(plainText + x, cipherText + x, &key, AES_ENCRYPT);
+	}
 	// 	3. Return the pointer to the ciphertext
 		
-	return NULL;	
+	return cipherText;	
 }
 
 /**
@@ -65,11 +73,19 @@ unsigned char* AES::decrypt(const unsigned char* cipherText)
 {
 	
 	//TODO: 1. Dynamically allocate a block to store the plaintext.
+	unsigned char* plainText = new unsigned char[strlen((char*)cipherText)];
 	//	2. Use AES_ecb_encrypt(...) to decrypt the text (please see the URL in setKey(...)
 	//	and the aes.cpp example provided.
+
+	// Since AES_ebc_encrypt works on two bytes at a time, we
+	// must iterate through every two bytes 
+	for (int x = 0; x < strlen((char*)cipherText); x += 2)
+	{
+
+		AES_ecb_encrypt(cipherText + x, plainText + x, &key, AES_DECRYPT);
+	}
 	// 	3. Return the pointer to the plaintext
-		
-	return NULL;
+	return plainText;
 }
 
 
