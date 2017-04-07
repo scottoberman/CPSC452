@@ -53,9 +53,9 @@ unsigned char* AES::encrypt(const unsigned char* plainText)
 	//	2. Use AES_ecb_encrypt(...) to encrypt the text (please see the URL in setKey(...)
 	//	and the aes.cpp example provided.
 
-	// Since AES_ebc_encrypt works on two bytes at a time, we
-	// must iterate through every two bytes 
-	for (int x = 0; x < strlen((char*)plainText); x += 2)
+	// Since AES_ebc_encrypt works on 16 byte blocks, we must
+	// move through the plaintext in 16 byte increments
+	for (int x = 0; x < strlen((char*)plainText); x += 16)
 	{
 		AES_ecb_encrypt(plainText + x, cipherText + x, &key, AES_ENCRYPT);
 	}
@@ -77,9 +77,9 @@ unsigned char* AES::decrypt(const unsigned char* cipherText)
 	//	2. Use AES_ecb_encrypt(...) to decrypt the text (please see the URL in setKey(...)
 	//	and the aes.cpp example provided.
 
-	// Since AES_ebc_encrypt works on two bytes at a time, we
-	// must iterate through every two bytes 
-	for (int x = 0; x < strlen((char*)cipherText); x += 2)
+	// Since AES_ebc_encrypt works on 16 byte blocks, we must
+	// move through the plaintext in 16 byte increments
+	for (int x = 0; x < strlen((char*)cipherText); x += 16)
 	{
 
 		AES_ecb_encrypt(cipherText + x, plainText + x, &key, AES_DECRYPT);
