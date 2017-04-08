@@ -39,10 +39,18 @@ int main(int argc, char** argv)
 	/* extract text from textfile */
 	fstream infile(inputFile.c_str());
 	string file1((istreambuf_iterator<char>(infile)), (istreambuf_iterator<char>()));
-	char* file = new char[file1.size()];
-	strcpy(file, file1.c_str());
+	char* file = new char[file1.size() + 1];
+	
+	int x;
+	for (x = 0; x < file1.size(); x++)
+	{
+		file[x] = file1.at(x);
+	}
 
-	cout << "Text taken from inputfile: " << file << endl;
+	file[x] = 0;
+
+	cout << "Text taken from inputfile: " << endl;
+	cout << file << endl;
 	infile.close();
 
 	/* Create an instance of the DES cipher */
@@ -86,12 +94,26 @@ int main(int argc, char** argv)
 	{
 	  cout << "Function is encryption" << endl;
 	  output = cipher->encrypt((unsigned char*)file);
-	  cout << "Ciphertext: " << output << endl;
+	  cout << "Ciphertext: " << endl;
+	  cout << output << endl;
 	}
-	else if (function == "DES")
+	else if (function == "DEC")
 	{
+		cout << "TEXT TO DECRYPT: " << endl;
+		
+		for (int x = 0; x < strlen(file); x++)
+		{
+			cout << (unsigned char)file[x];
+		}
+		cout << endl;
 	  cout << "Function is decryption" << endl;
+	  cout << file << endl;
+	  for (int x = 0; x < 17; x++)
+	  {
+		  cout << (unsigned char)file[x] << " ";
+	  }
 	  output = cipher->decrypt((unsigned char*)file);
+	  
 	  cout << "Plaintext: " << output << endl;
 	}
 	else

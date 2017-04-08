@@ -1,4 +1,5 @@
 #include "AES.h"
+#include <iostream>
 
 using namespace std;
 
@@ -27,17 +28,22 @@ bool AES::setKey(const unsigned char* keyArray)
 	// Both functions return 0 on success and other values on faliure.
 	// For documentation, please see https://boringssl.googlesource.com/boringssl/+/2623/include/openssl/aes.h
 	// and aes.cpp example provided with the assignment.
-	if (keyArray[0] == '0' && strlen((char*)keyArray) == 17) // If encrypting...
+	if (keyArray[0] == '0' && strlen((char*)keyArray) == 16) // If encrypting...
 	{
-		return AES_set_encrypt_key(keyArray + 1, 128, &key);
+		return (AES_set_encrypt_key(keyArray + 1, 128, &key) == 0);
 	}
-	else if (keyArray[0] == '1' && strlen((char*)keyArray) == 17) // If decrypting...
+	else if (keyArray[0] == '1' && strlen((char*)keyArray) == 16) // If decrypting...
 	{
-		return AES_set_decrypt_key(keyArray + 1, 128, &key);
+		return (AES_set_decrypt_key(keyArray + 1, 128, &key) == 0);
 	}
 	else // Error case should not happen
 	{
-		printf("AES::SetKey: Invalid first byte");
+		printf("AES::SetKey: Invalid first byte\n");
+		if (1)
+		{
+			cout << "KeySize is " << strlen((char*)keyArray);
+		}
+
 		return false;
 	}	
 }
@@ -50,18 +56,20 @@ bool AES::setKey(const unsigned char* keyArray)
 unsigned char* AES::encrypt(const unsigned char* plainText)
 {
 	//TODO: 1. Dynamically allocate a block to store the ciphertext.
-	unsigned char* cipherText = new unsigned char[strlen((char*)plainText)];
+	unsigned char* cipherText = new unsigned char[strlen((char*)plainText) + 1];
+	cout << "plainTextEnc size is: " << strlen((char*)plainText) << endl;
+	cout << "cipherTextEnc size is: " << strlen((char*)plainText) + 1 << endl;
 	//	2. Use AES_ecb_encrypt(...) to encrypt the text (please see the URL in setKey(...)
 	//	and the aes.cpp example provided.
 
 	// Since AES_ebc_encrypt works on 16 byte blocks, we must
 	// move through the plaintext in 16 byte increments
 	int x;
-	for (x = 0; x < strlen((char*)plainText) - 1; x += 16)
+	for (x = 0; x < strlen((char*)plainText); x += 16)
 	{
 		AES_ecb_encrypt(plainText + x, cipherText + x, &key, AES_ENCRYPT);
 	}
-	cipherText[x] = 0;
+	cipherText[x] = 0; // For null terminator
 	// 	3. Return the pointer to the ciphertext
 		
 	return cipherText;	
@@ -76,14 +84,16 @@ unsigned char* AES::decrypt(const unsigned char* cipherText)
 {
 	
 	//TODO: 1. Dynamically allocate a block to store the plaintext.
-	unsigned char* plainText = new unsigned char[strlen((char*)cipherText)];
+	unsigned char* plainText = new unsigned char[strlen((char*)cipherText) + 1];
+	cout << "plainTextDec size is: " << strlen((char*)cipherText) + 1 << endl;
+	cout << "cipherTextDec size is: " << strlen((char*)cipherText) << endl;
 	//	2. Use AES_ecb_encrypt(...) to decrypt the text (please see the URL in setKey(...)
 	//	and the aes.cpp example provided.
 
 	// Since AES_ebc_encrypt works on 16 byte blocks, we must
 	// move through the plaintext in 16 byte increments
 	int x;
-	for (x = 0; x < strlen((char*)cipherText) - 1; x += 16)
+	for (x = 0; x < strlen((char*)cipherText); x += 16)
 	{
 		AES_ecb_encrypt(cipherText + x, plainText + x, &key, AES_DECRYPT);
 	}
