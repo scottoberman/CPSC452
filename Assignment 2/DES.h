@@ -81,12 +81,12 @@ class DES: public CipherInterface
 		 * is equivalent to one of the bytes in a character array
 		 */
 		DES_LONG ctol(unsigned char *c);
-		
+		 
 		/* The 64-bit, user-defined encryption key */
 		unsigned char des_key[8];
 		
 		/* The key structure used by the DES library */
-		DES_key_schedule key;
+		DES_key_schedule * key;
 };
 
 
