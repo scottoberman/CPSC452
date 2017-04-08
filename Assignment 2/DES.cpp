@@ -1,5 +1,5 @@
 #include "DES.h"
-
+#include <iostream>
 /**
  * Sets the key to use
  * @param key - the key to use
@@ -49,7 +49,7 @@ bool DES::setKey(const unsigned char* keyArray)
 
 
 	/* Set the encryption key */
-	if ((keyErrorCode = DES_set_key_checked(&des_key, this->key)) != 0)
+	if ((keyErrorCode = DES_set_key_checked(&des_key, &this->key)) != 0)
 	{
 		fprintf(stderr, "\nkey error %d\n", keyErrorCode);
 
@@ -67,6 +67,7 @@ bool DES::setKey(const unsigned char* keyArray)
  */
 unsigned char* DES::encrypt(const unsigned char* plaintext)
 {
+	cout << "inside encrypt, plaintext = " << plaintext << endl;
 	//LOGIC:
 	//1. Check to make sure that the block is exactly 8 characters (i.e. 64 bits)
 	if (strlen((char*)plaintext) != 8)
@@ -81,6 +82,7 @@ unsigned char* DES::encrypt(const unsigned char* plaintext)
 	{
 		pt[i] = plaintext[i];
 	}
+	cout << pt << endl;
 	//3. Use ctol() to convert the first 4 chars into long; store the result in block[0]
 	block[0] = ctol(pt); // These casts may not give correct result.
 
