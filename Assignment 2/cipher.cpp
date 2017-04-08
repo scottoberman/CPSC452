@@ -85,13 +85,13 @@ int main(int argc, char** argv)
 	if (function == "ENC")
 	{
 	  cout << "Function is encryption" << endl;
-	  output = cipher->encrypt((unsigned char*)file);
+          memcpy(output, cipher->encrypt((unsigned char*)file), 16);
 	  cout << "Ciphertext: " << output << endl;
 	}
-	else if (function == "DES")
+	else if (function == "DEC")
 	{
 	  cout << "Function is decryption" << endl;
-	  output = cipher->decrypt((unsigned char*)file);
+	  memcpy(output, cipher->decrypt((unsigned char*)file), 16);
 	  cout << "Plaintext: " << output << endl;
 	}
 	else
