@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <stdio.h>
 
 using namespace std;
 
@@ -20,21 +21,20 @@ int main(int argc, char** argv)
 	*/
 
 	/* ciphername */
-	cout << "1" << endl;
 	string ciphername = argv[1];
-	cout << "2" << endl;
+	cout << "ciphername: " << ciphername << endl;
 	/* key */
 	unsigned char* key = (unsigned char*)argv[2];
-	cout << "3" << endl;
+	cout << "key:" << key << endl;
 	/* enc or dec */
 	string function = argv[3];
-	cout << "3" << endl;
+	cout << "function:" << function << endl;
 	/* inputfile */
 	string inputFile = argv[4];
-	cout << "4" << endl;
+	cout << "inputFile:" << inputFile << endl;
 	/* outputfile */
 	string outputfile = argv[5];
-	cout << "5" << endl;
+	cout << "outputfile:" << outputfile << endl;
 
 	/* extract text from textfile */
 	fstream infile(inputFile.c_str());
@@ -46,23 +46,7 @@ int main(int argc, char** argv)
 	infile.close();
 
 	/* Create an instance of the DES cipher */
-	CipherInterface* cipher = new CipherInterface();
-
-	/* Error checks */
-	if(!cipher)
-	{
-		fprintf(stderr, "ERROR [%s %s %d]: could not allocate memory\n",
-		__FILE__, __FUNCTION__, __LINE__);
-		exit(-1);
-	}
-
-	/* Set the encryption key
-	* A valid key comprises 16 hexidecimal
-	* characters. Below is one example.
-	* Your program should take input from
-	* command line.
-	*/
-	cipher->setKey(key);
+	CipherInterface* cipher = 0 ;
 
 	unsigned char* output = new unsigned char[100];
 
@@ -81,6 +65,23 @@ int main(int argc, char** argv)
 	  cerr << "ERROR %s is an incorrect option " << ciphername;
 	  exit(-1);
 	}
+
+	/* Error checks */
+	if(!cipher)
+	{
+		fprintf(stderr, "ERROR [%s %s %d]: could not allocate memory\n",
+		__FILE__, __FUNCTION__, __LINE__);
+		exit(-1);
+	}
+
+	/* Set the encryption key
+	* A valid key comprises 16 hexidecimal
+	* characters. Below is one example.
+	* Your program should take input from
+	* command line.
+	*/
+	cipher->setKey(key);
+
 	if (function == "ENC")
 	{
 	  cout << "Function is encryption" << endl;
@@ -105,9 +106,4 @@ int main(int argc, char** argv)
 
 	return 0;
 
-	/* Perform encryption */
-	//string cipherText = cipher->encrypt("hello world");
-
-	/* Perform decryption */
-	//cipher->decrypt(cipherText);
 }

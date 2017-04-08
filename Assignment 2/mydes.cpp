@@ -17,7 +17,7 @@
  * is equivalent to one of the bytes in a character array
  */
 DES_LONG ctol(unsigned char *c) 
-{
+{	`
         DES_LONG l;
         l =((DES_LONG)(*((c)++)));
         l = l | (((DES_LONG)(*((c)++)))<<8L);
@@ -59,8 +59,9 @@ int main()
 	/* Use the user-defined key to generate the keys for each
 	 * stage of the DES
 	 */
-	if ((k = DES_set_key_checked(&cbc_key, &key)) != 0)
-		printf("\nkey error\n");
+	DES_set_key_checked(&cbc_key, &key);
+	//if (k != 0)
+	//	printf("\nkey error\n");
 	
 	/* The plain text - must be 64 bits (i.e. 
 	 * In this example, there are 8 ASCI
@@ -116,7 +117,7 @@ int main()
 	in[1] = ctol(cipherText + 4);
 	
 		
-	/* Decrypt the cipher text */
+	/* Decrypt the cipher txt */
 	DES_encrypt1(in,&key,DEC);
 
 	memset(decryptedText, 0, 9);
