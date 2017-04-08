@@ -20,25 +20,29 @@ int main(int argc, char** argv)
 	*/
 
 	/* ciphername */
+	cout << "1" << endl;
 	string ciphername = argv[1];
+	cout << "2" << endl;
 	/* key */
 	unsigned char* key = (unsigned char*)argv[2];
+	cout << "3" << endl;
 	/* enc or dec */
 	string function = argv[3];
+	cout << "3" << endl;
 	/* inputfile */
 	string inputFile = argv[4];
+	cout << "4" << endl;
 	/* outputfile */
 	string outputfile = argv[5];
+	cout << "5" << endl;
 
 	/* extract text from textfile */
 	fstream infile(inputFile.c_str());
-	char* file = new char[25];
-	int i = 0;
-	while(!infile.eof())
-	{
-		infile.read(file+i, 1);
-		i++;
-	}
+	string file1((istreambuf_iterator<char>(infile)), (istreambuf_iterator<char>()));
+	char* file = new char[file1.size()];
+	strcpy(file, file1.c_str());
+
+	cout << "Text taken from inputfile: " << file << endl;
 	infile.close();
 
 	/* Create an instance of the DES cipher */

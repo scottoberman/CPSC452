@@ -75,10 +75,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>C:\OpenSSL-Win32\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>C:\OpenSSL-Win32\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -118,8 +119,6 @@
     <ClCompile Include="..\..\AES.cpp" />
     <ClCompile Include="..\..\cipher.cpp" />
     <ClCompile Include="..\..\DES.cpp" />
-    <ClCompile Include="..\..\myaes.cpp" />
-    <ClCompile Include="..\..\mydes.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\AES.h" />
