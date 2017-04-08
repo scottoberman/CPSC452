@@ -8,6 +8,9 @@
 
 using namespace std;
 
+int processFile(CipherInterface * cipher, FILE * inFile, FILE * outFile,
+    int maxBlockSize, const bool & mode);
+
 int main(int argc, char** argv)
 {
 
@@ -37,6 +40,7 @@ int main(int argc, char** argv)
 	cout << "outputfile:" << outputfile << endl;
 
 	/* extract text from textfile */
+        
 	fstream infile(inputFile.c_str());
 	string file1((istreambuf_iterator<char>(infile)), (istreambuf_iterator<char>()));
 	char* file = new char[file1.size()];
@@ -86,12 +90,16 @@ int main(int argc, char** argv)
 	{
 	  cout << "Function is encryption" << endl;
           memcpy(output, cipher->encrypt((unsigned char*)file), 16);
+          //attempted input file block padding
+          //processFile(cipher, infile, outfile, 16, true);
 	  cout << "Ciphertext: " << output << endl;
 	}
 	else if (function == "DEC")
 	{
 	  cout << "Function is decryption" << endl;
 	  memcpy(output, cipher->decrypt((unsigned char*)file), 16);
+          //attempted input file block padding
+          //processFile(cipher, infile, outfile, 16, false);
 	  cout << "Plaintext: " << output << endl;
 	}
 	else
@@ -105,5 +113,64 @@ int main(int argc, char** argv)
 	outfile.close();
 
 	return 0;
+}
 
+int processFile(CipherInterface * cipher, FILE * inFile, FILE * outFile,
+    int maxBlockSize, const bool & mode)
+{
+    // Invalid class pointer
+    if (!cipher)
+    {
+        fprintf(stderr, "Invalid cipher class\n");
+        return -1;
+    }
+    
+    // Invalid file pointer
+    if (!inFile) || !outFile)
+    {
+        fprintf(stderr, "One of the files is a NULL!\n");
+        return -1;
+    }
+    
+    int bytesRead = -1;
+    
+    // File buffer
+    char fileBuffer[maxBlockSize];
+    
+    while(bytesRead)
+    {
+        bytesRead = fread(fileBuffer, maxBlockSize, 1, inFile);
+        if (bytesRead < 0)
+        {
+            fprintf(sterr, "Error with file read\n");
+            exit -1;
+        }
+        if (bytesRead)
+        {   // mode is encrypt
+            if(!mode)
+            {   // bytesRead is not 16
+                if (bytesRead < maxBlockSize)
+                {
+                    memcpy(fileBuffer, cipher->encrypt((unsigned char*)file));
+                    memcpy(fileBuffer, "0", (maxBlockSize - bytesRead));
+                    fwrite(fileBuffer, 16, 1, inFile);
+                    return 0;
+                }
+                else
+                {
+                    memcpy(fileBuffer, cipher->encrypt((unsigned char*)file));
+                    cipher->encrypt((unsigned char*)file);
+                    fwrite(fileBuffer, 16, 1, inFile);
+                    return 0;
+                }
+            }
+            else // mode is decrypt
+            {
+                memcpy(fileBuffer, cipher->decrypt((unsigned char*)file));
+                memcpy(fileBuffer, "0", (maxBlockSize - bytesRead));
+                fwrite(fileBuffer, 16, 1, outFile);
+                return 0;
+            }
+        }
+    }
 }
