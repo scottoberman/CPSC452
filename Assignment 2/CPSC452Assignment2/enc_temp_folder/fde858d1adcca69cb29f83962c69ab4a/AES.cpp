@@ -1,4 +1,5 @@
 #include "AES.h"
+#include <iostream>
 
 using namespace std;
 
@@ -49,6 +50,7 @@ bool AES::setKey(const unsigned char* keyArray)
  */
 unsigned char* AES::encrypt(const unsigned char* plainText)
 {
+	
 	//TODO: 1. Dynamically allocate a block to store the ciphertext.
 	unsigned char* cipherText = new unsigned char[strlen((char*)plainText)];
 	//	2. Use AES_ecb_encrypt(...) to encrypt the text (please see the URL in setKey(...)
@@ -59,7 +61,9 @@ unsigned char* AES::encrypt(const unsigned char* plainText)
 	int x;
 	for (x = 0; x < strlen((char*)plainText) - 1; x += 16)
 	{
+		cout << "LENGTH OF PLAINTEXT IS " << strlen((char*)plainText) << endl;
 		AES_ecb_encrypt(plainText + x, cipherText + x, &key, AES_ENCRYPT);
+		cout << "encrypting stage" << endl;
 	}
 	cipherText[x] = 0;
 	// 	3. Return the pointer to the ciphertext
@@ -85,7 +89,9 @@ unsigned char* AES::decrypt(const unsigned char* cipherText)
 	int x;
 	for (x = 0; x < strlen((char*)cipherText) - 1; x += 16)
 	{
+		cout << "LENGTH OF DECRPYTION STRING IS " << strlen((char*)cipherText) << endl;
 		AES_ecb_encrypt(cipherText + x, plainText + x, &key, AES_DECRYPT);
+		cout << "decrypting stage" << endl;
 	}
 	plainText[x] = 0;
 	// 	3. Return the pointer to the plaintext
