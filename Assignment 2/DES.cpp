@@ -90,8 +90,7 @@ unsigned char* DES::encrypt(const unsigned char* plaintext)
 	block[1] = ctol(pt + 4); // These casts may not give correct result
 
 	//5. Perform des_encrypt1 in order to encrypt the block using this->key (see sample codes for details)
-    des_encrypt1(block, this->key, 1);
-
+    DES_encrypt1(block, &this->key, 1);
 
 	unsigned char* ciphertext = new unsigned char[8];
 
@@ -137,7 +136,7 @@ unsigned char* DES::decrypt(const unsigned char* ciphertext)
 	block[1] = ctol(ct + 4); // These casts may not give correct result
 
 	//5. Perform des_encrypt1 in order to encrypt the block using this->key (see sample codes for details)
-    des_encrypt1(block, this->key, 0);
+    DES_encrypt1(block, &this->key, 0);
 
 
 	unsigned char* plaintext = new unsigned char[8];
