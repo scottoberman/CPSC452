@@ -7,8 +7,6 @@
  */
 bool DES::setKey(const unsigned char* keyArray)
 {
-	this->key = new DES_key_schedule();
-
 	/**
 	 * First let's covert the char string
 	 * into an integer byte string
@@ -49,16 +47,14 @@ bool DES::setKey(const unsigned char* keyArray)
 
 	fprintf(stdout, "\n");
 
+
 	/* Set the encryption key */
-keyErrorCode = DES_set_key_checked(&this->des_key, this->key);
-	if ((keyErrorCode) != 0)
+	if ((keyErrorCode = DES_set_key_checked(&des_key, &this->key)) != 0)
 	{
 		fprintf(stderr, "\nkey error %d\n", keyErrorCode);
 
 		return false;
 	}
-
-	//cout << "set key done"<<endl;
 	/* All is well */
 	return true;
 }
@@ -70,39 +66,42 @@ keyErrorCode = DES_set_key_checked(&this->des_key, this->key);
  */
 unsigned char* DES::encrypt(const unsigned char* plaintext)
 {
-	cout << "inside encrypt, plaintext = " << plaintext << endl;
+	cout << "inside DES encrypt" << endl;
+	unsigned char* pt = new unsigned char[sizeof(plaintext)];
+	memcpy(pt, plaintext, sizeof(plaintext));
+	cout << "Size plaintext: " << sizeof(plaintext) << endl;
 	//LOGIC:
 	//1. Check to make sure that the block is exactly 8 characters (i.e. 64 bits)
-	if (strlen((char*)plaintext) != 8)
+	if (sizeof(plaintext) != 8)
 	{
 		return 0; // Return something indicating an error
 	}
+	cout << "EVERTHING IS GOOD" << endl;
+
 	//2. Declate an array DES_LONG block[2];
 	DES_LONG block[2];
 
-	unsigned char* pt = new unsigned char[sizeof(plaintext)];
-	for (int i = 0; i < sizeof(plaintext); i++)
-	{
-		pt[i] = plaintext[i];
-	}
 	cout << pt << endl;
 	//3. Use ctol() to convert the first 4 chars into long; store the result in block[0]
 	block[0] = ctol(pt); // These casts may not give correct result.
-
+	cout << "CTOL1 success" << endl;
 	//4. Use ctol() to convert the second 4 chars into long; store the resul in block[1]
 	block[1] = ctol(pt + 4); // These casts may not give correct result
-
+	cout << "CTOL2 success" << endl;
 	//5. Perform des_encrypt1 in order to encrypt the block using this->key (see sample codes for details)
-    DES_encrypt1(block, this->key, 1);
+    DES_encrypt1(block, &this->key, 1);
+	cout << "DES ENCRYPT Success" << endl;
 
-	unsigned char* ciphertext = new unsigned char[8];
+	unsigned char* ciphertext = new unsigned char[9];
 
 	//6. Convert the first ciphertext long to 4 characters using ltoc()
 	ltoc(block[0], ciphertext);
-
+	cout << "ltoc success" << endl;
 	//7. Convert the second ciphertext long to 4 characters using ltoc()
 	ltoc(block[1], ciphertext + 4);
-	cout << "test"<<endl;
+	cout << "ltoc success" << endl;
+
+	cout << ciphertext << sizeof(ciphertext) << endl;
 	//8. Save the results in the the dynamically allocated char array
 	// (e.g. unsigned char* bytes = nerw unsigned char[8]).
 
@@ -118,38 +117,42 @@ unsigned char* DES::encrypt(const unsigned char* plaintext)
 unsigned char* DES::decrypt(const unsigned char* ciphertext)
 {
 	// Same logic as encrypt(), except in step 5. decrypt instead of encrypting
+	cout << "inside DES Decrypt" << endl;
+	unsigned char* ct = new unsigned char[sizeof(ciphertext)];
+	memcpy(ct, ciphertext, sizeof(ciphertext));
+	cout << "Size plaintext: " << sizeof(ciphertext) << endl;
 	//LOGIC:
 	//1. Check to make sure that the block is exactly 8 characters (i.e. 64 bits)
-	if (strlen((char*)ciphertext) != 8)
+	if (sizeof(ciphertext) != 8)
 	{
 		return 0; // Return something indicating an error
 	}
+	cout << "EVERTHING IS GOOD" << endl;
+
 	//2. Declate an array DES_LONG block[2];
 	DES_LONG block[2];
 
-	unsigned char* ct = new unsigned char[sizeof(ciphertext)];
-	for (int i = 0; i < sizeof(ciphertext); i++)
-	{
-		ct[i] = ciphertext[i];
-	}
+	cout << ct << endl;
 	//3. Use ctol() to convert the first 4 chars into long; store the result in block[0]
 	block[0] = ctol(ct); // These casts may not give correct result.
-
+	cout << "CTOL1 success" << endl;
 	//4. Use ctol() to convert the second 4 chars into long; store the resul in block[1]
 	block[1] = ctol(ct + 4); // These casts may not give correct result
-
+	cout << "CTOL2 success" << endl;
 	//5. Perform des_encrypt1 in order to encrypt the block using this->key (see sample codes for details)
-    DES_encrypt1(block, this->key, 1);
+    DES_encrypt1(block, &this->key, 0);
+	cout << "DES ENCRYPT Success" << endl;
 
-
-	unsigned char* plaintext = new unsigned char[8];
+	unsigned char* plaintext = new unsigned char[9];
 
 	//6. Convert the first ciphertext long to 4 characters using ltoc()
 	ltoc(block[0], plaintext);
-
+	cout << "ltoc success" << endl;
 	//7. Convert the second ciphertext long to 4 characters using ltoc()
 	ltoc(block[1], plaintext + 4);
+	cout << "ltoc success" << endl;
 
+	cout << plaintext << sizeof(plaintext) << endl;
 	//8. Save the results in the the dynamically allocated char array
 	// (e.g. unsigned char* bytes = nerw unsigned char[8]).
 

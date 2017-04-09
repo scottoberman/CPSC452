@@ -7,6 +7,7 @@
 #include <stdio.h>
 
 using namespace std;
+int processFile(CipherInterface* cipher, FILE* inFile, FILE* outFile, int maxBlockSize, const bool& mode);
 
 int main(int argc, char** argv)
 {
@@ -37,6 +38,7 @@ int main(int argc, char** argv)
 	cout << "outputfile:" << outputfile << endl;
 
 	/* extract text from textfile */
+	/*
 	fstream infile(inputFile.c_str());
 	string file1((istreambuf_iterator<char>(infile)), (istreambuf_iterator<char>()));
 	char* file = new char[file1.size()];
@@ -44,6 +46,7 @@ int main(int argc, char** argv)
 
 	cout << "Text taken from inputfile: " << file << endl;
 	infile.close();
+	*/
 
 	/* Create an instance of the DES cipher */
 	CipherInterface* cipher = 0 ;
@@ -52,12 +55,10 @@ int main(int argc, char** argv)
 
 	if (ciphername == "AES")
 	{
-	  cout << "Ciphername is AES" << endl;
 	  cipher = new AES();
 	}
 	else if (ciphername == "DES")
 	{
-	  cout << "Ciphername is DES" << endl;
 	  cipher = new DES();
 	}
 	else
@@ -80,30 +81,114 @@ int main(int argc, char** argv)
 	* Your program should take input from
 	* command line.
 	*/
-	cipher->setKey(key);
-
-	if (function == "ENC")
+	if(cipher->setKey(key))
 	{
-	  cout << "Function is encryption" << endl;
-          memcpy(output, cipher->encrypt((unsigned char*)file), 16);
-	  cout << "Ciphertext: " << output << endl;
-	}
-	else if (function == "DEC")
-	{
-	  cout << "Function is decryption" << endl;
-	  memcpy(output, cipher->decrypt((unsigned char*)file), 16);
-	  cout << "Plaintext: " << output << endl;
+		/* open file */
+		FILE* infile;
+		FILE* outfile;
+		infile = fopen(inputFile.c_str(), "r");
+		outfile = fopen(outputfile.c_str(), "w");
+		//ofstream outfile(outputfile.c_str());
+		if (function == "ENC")
+		{
+			if (ciphername == "DES")
+			{
+				processFile(cipher, infile, outfile, 8, true);
+			}
+			else
+			{
+				processFile(cipher, infile, outfile, 16, true);
+				//memcpy(output, cipher->encrypt((unsigned char*)file), 16);
+				//cout << "Ciphertext: " << output << endl;
+			}
+		}
+		else if (function == "DEC")
+		{
+			if (ciphername == "DES")
+			{
+				processFile(cipher, infile, outfile, 8, false);
+			}
+			else
+			{
+				processFile(cipher, infile, outfile, 16, false);
+				//memcpy(output, cipher->encrypt((unsigned char*)file), 16);
+				//cout << "Plaintext: " << output << endl;
+			}
+		}
+		else
+		{
+		  cerr << "ERROR incorrected option " << function << endl;
+		  exit(-1);
+		}
+		/*
+		ofstream outfile(outputfile.c_str());
+		outfile << output;
+		outfile.close();
+		*/
+		fclose(outfile);
+		cout << "closing outfile" << endl;
+		fclose(infile);
+		cout << "closing infile" << endl;
 	}
 	else
 	{
-	  cerr << "ERROR incorrected option " << function << endl;
-	  exit(-1);
+		cerr << "ERROR invalid key" << endl;
 	}
-
-	ofstream outfile(outputfile.c_str());
-	outfile << output;
-	outfile.close();
 
 	return 0;
 
+}
+
+int processFile(CipherInterface* cipher, FILE* inFile, FILE* outFile, int maxBlockSize, const bool& mode)
+{
+   /* The class pointer is invalid */
+   if(!cipher) { fprintf(stderr, "Invalid cipher class!\n"); return -1;}
+
+   /* Invalid file pointers */
+   if(!inFile || !outFile) {fprintf(stderr, "One of the files is a NULL!\n"); return -1;}
+
+   /* The number of bytes read */
+   int bytesRead = -1;
+
+   /* The file buffer */
+   char fileBuffer[maxBlockSize];
+
+   /* Read the entire file */
+   while(bytesRead)
+   {
+       /* Read from the input file */
+       bytesRead = fread(fileBuffer, maxBlockSize, 1, inFile);
+	   cout << fileBuffer << sizeof(fileBuffer)<< endl;
+
+       /* Something went wrong */
+       if(bytesRead < 0)
+       {
+           fprintf(stderr, "File read failed!\n");
+           exit(-1);
+       }
+	   cout << "Bytes Read " << bytesRead << endl;
+       /* We got stuff to process */
+       if(bytesRead)
+       {
+		   cout << "inside bytesread" << endl;
+		   unsigned char* output = new unsigned char[9];
+           if(mode)
+           {
+               //PADD
+			   cout << "process encryption" << endl;
+			   //encrypt
+               memcpy(output, cipher->encrypt((unsigned char*)fileBuffer), maxBlockSize);
+			   cout << "encryption successfull" << endl;
+           }
+           else
+           {
+			   cout << "process decryption" << endl;
+			   memcpy(output, cipher->decrypt((unsigned char*)fileBuffer), maxBlockSize);
+				//decrypt
+				//fwrite
+           }
+		   fwrite(output, sizeof(char), sizeof(output), outFile);
+		   cout << "writing to file " << outFile << endl;
+       }
+   }
 }
