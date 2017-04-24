@@ -60,7 +60,7 @@ def getFileSig(fileName, privKey):
 		dataHash = SHA512.new(fileContent).hexdigest()
 		# 4. Sign the hash computed in 4. using the digSig() function
 		# you implemented.
-		signedHash = digSig(priveKey, dataHash)
+		signedHash = digSig(privKey, dataHash)
 	# 5. Return the signed hash; this is your digital signature
 	return signedHash
 	pass
@@ -143,7 +143,7 @@ def verifySig(theHash, sig, veriKey):
 	# TODO: Verify the hash against the provided
 	# signature using the verify() function of the
 	# key and return the result
-	return variKey.verify(theHash, sig)
+	return veriKey.verify(theHash, sig)
 	pass
 
 
@@ -175,7 +175,7 @@ def main():
 	if mode == "sign":
 
 		# TODO: 1. Get the file signature
-		sig = getFileSig(sigFileName, loadedKey)
+		sig = getFileSig(inputFileName, loadedKey)
 		#       2. Save the signature to the file
 		saveSig(sigFileName, sig)
 
@@ -185,10 +185,16 @@ def main():
 	elif mode == "verify":
 
 		# TODO Use the verifyFileSig() function to check if the
-		# signature signature in the signature file matches the
+		# signature in the signature file matches the
 		# signature of the input file
 		theSig = loadSig(sigFileName)
-		verifyFileSig(inputFileName, loadedKey, theSig)
+		inputSig = verifyFileSig(inputFileName, loadedKey, theSig)
+
+		if (inputSig):
+			print "Signatures Match!"
+		else:
+			print "Signatures Do Not Match..."
+
 		pass
 	else:
 		print "Invalid mode ", mode
