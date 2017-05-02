@@ -10,7 +10,7 @@ Write a README file (text file, do not submit a .doc file) which contains
 # NAMES
 - Scott Oberman
 - Erik  Leinhard
-- Khoa
+- Khoa Do 
 - Andrew Michel aamichel@csu.fullerton.edu
 
 # PROGRAMMING LANGUAGE
