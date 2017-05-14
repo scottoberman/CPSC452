@@ -68,26 +68,32 @@ def saveFile(outputFile, data):
 ####################################################
 def embed(fileName, signature):
 	#read signature file to data
-	fileIn = open(signature,"r")
-	data = fileIn.read()
-	fileIn.close()
-	#embed data to fileName
-	fileOut=open(fileName,"r+a")
-	data2=fileOut.read()
-	print len(data)
-	print len(data2)
-	#check for input strings that must be a multiple of 16 in length and insert pad
-	num = (len(data)+len(data2))/16
-	print (len(data)+len(data2))
-	if ((len(data)+len(data2)) - num*16 > 0):
-		dif = (num+1)*16 - len(data) - len(data2)
-		pad = ' ' * dif
-		print "adding pads to data"
-		print "data len is now " + str(len(data) + len(data2))
-	#embed data to fileName
-	fileOut.write(pad)
-	fileOut.write(data)
+	fileOut = open(signature,"r")
+	sig = fileOut.read()
 	fileOut.close()
+	#embed data to signature
+	fileIn=open(fileName,"r")
+	embed=fileIn.read()
+	fileIn.close()
+	print len(sig)
+	print len(embed)
+	#check for input strings that must be a multiple of 16 in length and insert pad
+	num = (len(sig)+len(embed))/16
+	print (len(sig)+len(embed))
+	if ((len(sig)+len(embed)) - num*16 > 0):
+		dif = (num+1)*16 - len(sig) - len(embed)
+		pad = ' ' * dif
+		print "adding pads to data " + str(len(pad))
+	#embed data to fileName
+	fileOut = open(fileName, "w")
+	fileOut.write(sig)
+	fileOut.write(embed)
+	fileOut.write(pad)
+	fileOut.close()
+	file = open(fileName, "r")
+	data2=file.read()
+	print "current size of file " + str(len(data2))
+	file.close()
 	pass
 
 
@@ -211,6 +217,7 @@ def loadSig(fileName):
 	# element tuple
 	with open(fileName, 'r') as theFile:
 		fileContent = int(theFile.read())
+		print "File content " + str(fileContent)
 		theTuple = (fileContent,)
 	return theTuple
 	pass
@@ -306,11 +313,13 @@ def main():
                 		#decrypt encrypted file
                 		decrypted = decrypt(inputFileName, key)
                		 	#remove signature from orignal data
-                		signature = "12345"
-                		original = decrypted.replace(signature, "")
+                		sigSize = 617
+				signature = decrypted[0:sigSize]
+				print "Signature removed: " + signature
+                		original = decrypted[sigSize:]
 	                        #remove padded values in original
 				while (original[-1] == " "):
-					original = original.replace(original[-1],"")
+					original = original.replace(original[-1], "")
                 		#save signature to a file
                 		saveFile(sigFileName, signature)
                 		#save original data to a file
