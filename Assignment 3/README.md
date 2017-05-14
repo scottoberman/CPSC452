@@ -20,8 +20,9 @@ Write a README file (text file, do not submit a .doc file) which contains
 # HOW TO EXECUTE
 - Without Embedding signature to the file and encrypt it
     python signer.py <KEY FILE NAME> <SIGNATURE FILE NAME> <INPUT FILE NAME> <MODE>
+
 - Without Embedding signature to the file and encrypt it
-    python signer.py <KEY FILE NAME> <SIGNATURE FILE NAME> <INPUT FILE NAME> <MODE> <CIPHER_AES> <KEY>
+    python signer.py <KEY FILE NAME> <SIGNATURE FILE NAME> <INPUT FILE NAME> <MODE> <AES> <KEY>
 
 # KEY FILE NAME:
   - the name of the file that contains the private key if signing or the public key if verifying
@@ -34,7 +35,7 @@ Write a README file (text file, do not submit a .doc file) which contains
     - Encrypts the generated hash from SHA-512 with the private key
   - verify:
     - Decrypts the signature using the public key and compares it with the SHA-512 hash to verify the data
-- CIPHER_AES: 
+- AES: 
   - the cipher AES used to indicate whether the user want to embed signature to original file and encrypt it
 - KEY: 
   - the key that is used for encrypting the file using AES algorithm
