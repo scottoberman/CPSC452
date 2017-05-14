@@ -7,6 +7,91 @@ from Crypto.Hash import SHA512
 from base64 import b64encode, b64decode
 
 ##################################################
+# Encrypt the file that has signature
+# @param inputFile - file with signature to encrypt
+# @param key - aes key to encrypt inputFile
+# @return - encrypted data
+##################################################
+def encrypt(inputFile, key):
+	encrypted = None
+	#open file with signature embedded
+	fileIn = open(inputFile, "r")
+	data = fileIn.read()
+	fileIn.close()
+	print "len of file with sig " + str(len(data))
+
+	# Create an instance of the AES class
+	# and initialize the key
+	IV = 16 * '\x00'
+	aes = AES.new(key, AES.MODE_ECB, IV)
+	#encrypt the signature
+	encrypted = aes.encrypt(data)
+	return encrypted
+
+##################################################
+# Encrypt the file that has signature
+# @param inputFile - file with signature to encrypt
+# @param key - aes key to encrypt inputFile
+# @return - encrypted data
+##################################################
+def decrypt(inputFile, key):
+	decrypted = None
+	#save signature in string to data
+	fileIn = open(inputFile, "r")
+	data = fileIn.read()
+	fileIn.close()
+	# Create an instance of the AES class
+	# and initialize the key
+	IV = 16 * '\x00'
+	aes = AES.new(key, AES.MODE_ECB, IV)
+	#encrypt the signature
+	decrypted = aes.decrypt(data)
+	return decrypted
+
+
+####################################################
+# Saves the encrypted signature to a file
+# @param outputFile - the name of the file
+# @param data - data want to write to outputFile
+####################################################
+def saveFile(outputFile, data):
+	#save encrypted data to outputFile
+	outputFile = open(outputFile, "w")
+	outputFile.write(data)
+	outputFile.close()
+	pass
+
+####################################################
+# Embed signature to a file
+# @param fileName - the name of the destination file
+# @param signature - a signature file to embed
+####################################################
+def embed(fileName, signature):
+	#read signature file to data
+	fileIn = open(signature,"r")
+	data = fileIn.read()
+	fileIn.close()
+	#embed data to fileName
+	fileOut=open(fileName,"r+a")
+	data2=fileOut.read()
+	print len(data)
+	print len(data2)
+	#check for input strings that must be a multiple of 16 in length and insert pad
+	num = (len(data)+len(data2))/16
+	print (len(data)+len(data2))
+	if ((len(data)+len(data2)) - num*16 > 0):
+		dif = (num+1)*16 - len(data) - len(data2)
+		pad = ' ' * dif
+		print "adding pads to data"
+		print "data len is now " + str(len(data) + len(data2))
+	#embed data to fileName
+	fileOut.write(pad)
+	fileOut.write(data)
+	fileOut.close()
+	pass
+
+
+##################################################
 # Loads the RSA key object from the location
 # @param keyPath - the path of the key
 # @return - the RSA key object with the loaded key
@@ -146,14 +231,11 @@ def verifySig(theHash, sig, veriKey):
 	return veriKey.verify(theHash, sig)
 	pass
 
-
-
 # The main function
 def main():
-
 	# Make sure that all the arguments have been provided
 	if len(sys.argv) < 5:
-		print "USAGE: " + sys.argv[0] + " <KEY FILE NAME> <SIGNATURE FILE NAME> <INPUT FILE NAME>"
+		print "USAGE: " + sys.argv[0] + " <KEY FILE NAME> <SIGNATURE FILE NAME> <INPUT FILE NAME> <MODE> <AES> <KEY>"
 		exit(-1)
 
 	# The key file
@@ -176,14 +258,64 @@ def main():
 
 		# TODO: 1. Get the file signature
 		sig = getFileSig(inputFileName, loadedKey)
+		print "Signature: " + str(sig[0])
 		#       2. Save the signature to the file
 		saveSig(sigFileName, sig)
 
 		print "Signature saved to file ", sigFileName
 
+        	#Extra credit: option to encrypt the file with signature using AES
+        	#verify using AES
+		if len(sys.argv) > 5:
+			if (sys.argv[5] == "AES" or sys.argv[5] == "aes"):
+				#verify key
+				if len(sys.argv) < 7:
+					print "Please enter AES key to encrypt file"
+					print "USAGE: " + sys.argv[0] + " <KEY FILE NAME> <SIGNATURE FILE NAME> <INPUT FILE NAME> <MODE> AES <KEY>"
+					exit(-1)
+				#aes key
+				key = sys.argv[6]
+				#embed signature to file
+				embed(inputFileName, sigFileName)
+				print "Embedded signature to the file"
+				#encrypt signature file
+				encrypted = encrypt(inputFileName, key)
+				print "Encrypted successfully"
+				#save encrypted file
+				saveFile(inputFileName, encrypted)
+				print "Saved encrypted file to encryped.txt"
+        		else:	
+				if (sys.argv[5] != ""):
+					print "To encrypt file, must use AES and AES_KEY"
+					print "USAGE: " + sys.argv[0] + " <KEY FILE NAME> <SIGNATURE FILE NAME> <INPUT FILE NAME> <MODE> AES <KEY>"
+					exit(-1)
+
 	# We are verifying the signature
 	elif mode == "verify":
-
+		#Extra credit: option to decrypt the file using AES
+        	#verify using AES
+		if len(sys.argv) > 5:
+        		if (sys.argv[5] == "AES" or sys.argv[5] == "aes" ):
+                		#verify key
+                		if len(sys.argv) < 7:
+					print "Please enter AES key to encrypt file"
+					print "USAGE: " + sys.argv[0] + " <KEY FILE NAME> <SIGNATURE FILE NAME> <INPUT FILE NAME> <MODE> AES <KEY>"
+					exit(-1)
+                		#aes key
+                		key = sys.argv[6]
+                		#decrypt encrypted file
+                		decrypted = decrypt(inputFileName, key)
+               		 	#remove signature from orignal data
+                		signature = "12345"
+                		original = decrypted.replace(signature, "")
+	                        #remove padded values in original
+				while (original[-1] == " "):
+					original = original.replace(original[-1],"")
+                		#save signature to a file
+                		saveFile(sigFileName, signature)
+                		#save original data to a file
+                		saveFile(inputFileName, original)
+                
 		# TODO Use the verifyFileSig() function to check if the
 		# signature in the signature file matches the
 		# signature of the input file

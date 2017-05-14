@@ -5,10 +5,10 @@
 import os, random, struct
 import sys
 from Crypto.Cipher import AES
-from Crypto.PublicKey import RSA 
-from Crypto.Signature import PKCS1_v1_5 
+from Crypto.PublicKey import RSA
+from Crypto.Signature import PKCS1_v1_5
 from Crypto.Hash import SHA512
-from base64 import b64encode, b64decode 
+from base64 import b64encode, b64decode
 
 ##################################################
 #Loads the RSA key object from the location
@@ -16,24 +16,24 @@ from base64 import b64encode, b64decode
 # @return - the RSA key object with the loaded key
 ##################################################
 def loadKey(keyPath):
-	
-	# The RSA key
-	key = None
-	
-	# Open the key file
-	with open(keyPath, 'r') as keyFile:
-		
-		# Read the key file
-		keyFileContent = keyFile.read()
-		
-		# Decode the key
-		decodedKey = b64decode(keyFileContent)
-		
-		# Load the key
-		key = RSA.importKey(decodedKey)
-
-	# Return the key
-	return key
+    
+    # The RSA key
+    key = None
+        
+        # Open the key file
+        with open(keyPath, 'r') as keyFile:
+            
+            # Read the key file
+            keyFileContent = keyFile.read()
+                
+                # Decode the key
+                decodedKey = b64decode(keyFileContent)
+                
+                # Load the key
+                key = RSA.importKey(decodedKey)
+        
+        # Return the key
+    return key
 
 
 # Load the public and private keys from files
@@ -62,6 +62,6 @@ dataHash = SHA512.new(data).hexdigest()
 # the decrypted result to the dataHash
 
 if pubKey.verify(dataHash, dataSig) == True:
-	print "Match!"
+    print "Match!"
 else:
-	print "No match!"
+    print "No match!"
