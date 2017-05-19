@@ -24,6 +24,7 @@ Write a README file (text file, do not submit a .doc file) which contains
 - Without Embedding signature to the file and encrypt it
     python signer.py <KEY FILE NAME> <SIGNATURE FILE NAME> <INPUT FILE NAME> <MODE> <AES> <KEY>
 
+
 # KEY FILE NAME:
   - the name of the file that contains the private key if signing or the public key if verifying
 - SIGNATURE FILE NAME:

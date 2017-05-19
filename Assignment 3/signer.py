@@ -50,12 +50,12 @@ def decrypt(inputFile, key):
 
 
 ####################################################
-# Saves the encrypted signature to a file
+# Saves data to a file
 # @param outputFile - the name of the file
 # @param data - data want to write to outputFile
 ####################################################
 def saveFile(outputFile, data):
-	#save encrypted data to outputFile
+	#save data to outputFile
 	outputFile = open(outputFile, "w")
 	outputFile.write(data)
 	outputFile.close()
@@ -71,7 +71,7 @@ def embed(fileName, signature):
 	fileOut = open(signature,"r")
 	sig = fileOut.read()
 	fileOut.close()
-	#embed data to signature
+	#embed signature to fileName
 	fileIn=open(fileName,"r")
 	embed=fileIn.read()
 	fileIn.close()
@@ -217,7 +217,7 @@ def loadSig(fileName):
 	# element tuple
 	with open(fileName, 'r') as theFile:
 		fileContent = int(theFile.read())
-		print "File content " + str(fileContent)
+		print "Signature content " + str(fileContent)
 		theTuple = (fileContent,)
 	return theTuple
 	pass
@@ -282,6 +282,9 @@ def main():
 					exit(-1)
 				#aes key
 				key = sys.argv[6]
+				if (len(key)<16):
+					print "Key must be 16-byte characters"
+					exit(-1)
 				#embed signature to file
 				embed(inputFileName, sigFileName)
 				print "Embedded signature to the file"
@@ -312,14 +315,18 @@ def main():
                 		key = sys.argv[6]
                 		#decrypt encrypted file
                 		decrypted = decrypt(inputFileName, key)
+				print "length of decrypted file: " + str(len(decrypted))
                		 	#remove signature from orignal data
                 		sigSize = 617
 				signature = decrypted[0:sigSize]
-				print "Signature removed: " + signature
+				print "Signature removed: " + signature + " and its length: " + str(len(signature))
                 		original = decrypted[sigSize:]
+				print "Its length: " + str(len(original))
 	                        #remove padded values in original
 				while (original[-1] == " "):
-					original = original.replace(original[-1], "")
+					original = original[0:-1]
+					print "Its length: " + str(len(original))
+
                 		#save signature to a file
                 		saveFile(sigFileName, signature)
                 		#save original data to a file
