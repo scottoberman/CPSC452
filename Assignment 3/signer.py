@@ -18,7 +18,7 @@ def encrypt(inputFile, key):
 	fileIn = open(inputFile, "r")
 	data = fileIn.read()
 	fileIn.close()
-	print "len of file with sig " + str(len(data))
+	print("len of file with sig " + str(len(data)))
 
 	# Create an instance of the AES class
 	# and initialize the key
@@ -75,15 +75,15 @@ def embed(fileName, signature):
 	fileIn=open(fileName,"r")
 	embed=fileIn.read()
 	fileIn.close()
-	print len(sig)
-	print len(embed)
+	print(len(sig))
+	print(len(embed))
 	#check for input strings that must be a multiple of 16 in length and insert pad
 	num = (len(sig)+len(embed))/16
 	print (len(sig)+len(embed))
 	if ((len(sig)+len(embed)) - num*16 > 0):
 		dif = (num+1)*16 - len(sig) - len(embed)
 		pad = ' ' * dif
-		print "adding pads to data " + str(len(pad))
+		print("adding pads to data " + str(len(pad)))
 	#embed data to fileName
 	fileOut = open(fileName, "w")
 	fileOut.write(sig)
@@ -92,7 +92,7 @@ def embed(fileName, signature):
 	fileOut.close()
 	file = open(fileName, "r")
 	data2=file.read()
-	print "current size of file " + str(len(data2))
+	print("current size of file " + str(len(data2)))
 	file.close()
 	pass
 
@@ -217,7 +217,7 @@ def loadSig(fileName):
 	# element tuple
 	with open(fileName, 'r') as theFile:
 		fileContent = int(theFile.read())
-		print "Signature content " + str(fileContent)
+		print("Signature content " + str(fileContent))
 		theTuple = (fileContent,)
 	return theTuple
 	pass
@@ -242,7 +242,7 @@ def verifySig(theHash, sig, veriKey):
 def main():
 	# Make sure that all the arguments have been provided
 	if len(sys.argv) < 5:
-		print "USAGE: " + sys.argv[0] + " <KEY FILE NAME> <SIGNATURE FILE NAME> <INPUT FILE NAME> <MODE> <AES> <KEY>"
+		print("USAGE: " + sys.argv[0] + " <KEY FILE NAME> <SIGNATURE FILE NAME> <INPUT FILE NAME> <MODE> <AES> <KEY>")
 		exit(-1)
 
 	# The key file
@@ -265,11 +265,11 @@ def main():
 
 		# TODO: 1. Get the file signature
 		sig = getFileSig(inputFileName, loadedKey)
-		print "Signature: " + str(sig[0])
+		print("Signature: " + str(sig[0]))
 		#       2. Save the signature to the file
 		saveSig(sigFileName, sig)
 
-		print "Signature saved to file ", sigFileName
+		print("Signature saved to file ", sigFileName)
 
         	#Extra credit: option to encrypt the file with signature using AES
         	#verify using AES
@@ -277,27 +277,27 @@ def main():
 			if (sys.argv[5] == "AES" or sys.argv[5] == "aes"):
 				#verify key
 				if len(sys.argv) < 7:
-					print "Please enter AES key to encrypt file"
-					print "USAGE: " + sys.argv[0] + " <KEY FILE NAME> <SIGNATURE FILE NAME> <INPUT FILE NAME> <MODE> AES <KEY>"
+					print("Please enter AES key to encrypt file")
+					print("USAGE: " + sys.argv[0] + " <KEY FILE NAME> <SIGNATURE FILE NAME> <INPUT FILE NAME> <MODE> AES <KEY>")
 					exit(-1)
 				#aes key
 				key = sys.argv[6]
 				if (len(key)<16):
-					print "Key must be 16-byte characters"
+					print("Key must be 16-byte characters")
 					exit(-1)
 				#embed signature to file
 				embed(inputFileName, sigFileName)
-				print "Embedded signature to the file"
+				print("Embedded signature to the file")
 				#encrypt signature file
 				encrypted = encrypt(inputFileName, key)
-				print "Encrypted successfully"
+				print("Encrypted successfully")
 				#save encrypted file
 				saveFile(inputFileName, encrypted)
-				print "Saved encrypted file to encryped.txt"
-        		else:	
+				print("Saved encrypted file to encryped.txt")
+			else:	
 				if (sys.argv[5] != ""):
-					print "To encrypt file, must use AES and AES_KEY"
-					print "USAGE: " + sys.argv[0] + " <KEY FILE NAME> <SIGNATURE FILE NAME> <INPUT FILE NAME> <MODE> AES <KEY>"
+					print("To encrypt file, must use AES and AES_KEY")
+					print("USAGE: " + sys.argv[0] + " <KEY FILE NAME> <SIGNATURE FILE NAME> <INPUT FILE NAME> <MODE> AES <KEY>")
 					exit(-1)
 
 	# We are verifying the signature
@@ -305,33 +305,32 @@ def main():
 		#Extra credit: option to decrypt the file using AES
         	#verify using AES
 		if len(sys.argv) > 5:
-        		if (sys.argv[5] == "AES" or sys.argv[5] == "aes" ):
+			if (sys.argv[5] == "AES" or sys.argv[5] == "aes" ):
                 		#verify key
-                		if len(sys.argv) < 7:
-					print "Please enter AES key to encrypt file"
-					print "USAGE: " + sys.argv[0] + " <KEY FILE NAME> <SIGNATURE FILE NAME> <INPUT FILE NAME> <MODE> AES <KEY>"
+				if len(sys.argv) < 7:
+					print("Please enter AES key to encrypt file")
+					print("USAGE: " + sys.argv[0] + " <KEY FILE NAME> <SIGNATURE FILE NAME> <INPUT FILE NAME> <MODE> AES <KEY>")
 					exit(-1)
-                		#aes key
-                		key = sys.argv[6]
-                		#decrypt encrypted file
-                		decrypted = decrypt(inputFileName, key)
-				print "length of decrypted file: " + str(len(decrypted))
-               		 	#remove signature from orignal data
-                		sigSize = 617
+				#aes key
+				key = sys.argv[6]
+				#decrypt encrypted file
+				decrypted = decrypt(inputFileName, key)
+				print("length of decrypted file: " + str(len(decrypted)))
+				#remove signature from orignal data
+				sigSize = 617
 				signature = decrypted[0:sigSize]
-				print "Signature removed: " + signature + " and its length: " + str(len(signature))
-                		original = decrypted[sigSize:]
-				print "Its length: " + str(len(original))
-	                        #remove padded values in original
+				print("Signature removed: " + signature + " and its length: " + str(len(signature)))
+				original = decrypted[sigSize:]
+				print("Its length: " + str(len(original)))
+				#remove padded values in original
 				while (original[-1] == " "):
 					original = original[0:-1]
-					print "Its length: " + str(len(original))
-
+					print("Its length: " + str(len(original)))
                 		#save signature to a file
-                		saveFile(sigFileName, signature)
-                		#save original data to a file
-                		saveFile(inputFileName, original)
-                
+				saveFile(sigFileName, signature)
+				#save original data to a file
+				saveFile(inputFileName, original)
+
 		# TODO Use the verifyFileSig() function to check if the
 		# signature in the signature file matches the
 		# signature of the input file
@@ -339,13 +338,13 @@ def main():
 		inputSig = verifyFileSig(inputFileName, loadedKey, theSig)
 
 		if (inputSig):
-			print "Signatures Match!"
+			print("Signatures Match!")
 		else:
-			print "Signatures Do Not Match..."
+			print("Signatures Do Not Match...")
 
 		pass
 	else:
-		print "Invalid mode ", mode
+		print("Invalid mode ", mode)
 
 ### Call the main function ####
 if __name__ == "__main__":
