@@ -8,11 +8,11 @@ Write a README file (text file, do not submit a .doc file) which contains
 # ASSIGNMENT 3
 
 # NAMES
-- Scott Oberman
-- Erik  Leinhard
-- Khoa Do 
-- Andrew Michel aamichel@csu.fullerton.edu
-- Phung Tran
+- Scott Oberman -> scottoberman@csu.fullerton.edu
+- Erik  Leinhard -> elienhard@csu.fullerton.edu
+- Khoa Do -> khoado@csu.fullerton.edu
+- Andrew Michel -> aamichel@csu.fullerton.edu
+- Phung Tran -> kimphung@csu.fullerton.edu
 
 # PROGRAMMING LANGUAGE
 - PYTHON
