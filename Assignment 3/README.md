@@ -18,11 +18,17 @@ Write a README file (text file, do not submit a .doc file) which contains
 - PYTHON
 
 # HOW TO EXECUTE
-- Without Embedding signature to the file and encrypt it
-    python signer.py <KEY FILE NAME> <SIGNATURE FILE NAME> <INPUT FILE NAME> <MODE>
+- Create signature of the file
+    python signer.py privKey.pem <SIGNATURE FILE NAME> <INPUT FILE NAME> sign
 
-- Without Embedding signature to the file and encrypt it
-    python signer.py <KEY FILE NAME> <SIGNATURE FILE NAME> <INPUT FILE NAME> <MODE> <AES> <KEY>
+- Verify signature 
+    python signer.py pubKey.pem <SIGNATURE FILE NAME> <INPUT FILE NAME> verify
+
+- Embedding signature to the file and encrypt it 
+    python signer.py privKey.pem <SIGNATURE FILE NAME> <INPUT FILE NAME> sign AES <KEY>
+
+- Decrypt file and verify signature
+    python signer.py pubKey.pem <SIGNATURE FILE NAME> <INPUT FILE NAME> verify AES <KEY>
 
 
 # KEY FILE NAME:
