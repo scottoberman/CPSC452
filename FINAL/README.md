@@ -5,11 +5,12 @@
 - Khoa
 - Scott Oberman
 - Andrew Michel
+- Phung Tran
 
 ## CONTRIBUTIONS
 - ERIK:
 	- Set up and configure a VPN server
-- KHOA:
+- KHOA and Phung
 	- Set up an IPSec channel between two systems 
 - SCOTT:
 	- Set up a SSH server 
